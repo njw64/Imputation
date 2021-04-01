@@ -27,7 +27,7 @@ then
 fi
 
 # slurm_vcfChr.sh
-jid1=$(sbatch -J ${SAMPLE}.fastq2sam ${HOME}/scripts/fastq2bam/fastq2sam.sh ${SAMPLE})
+jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/slurm_vcfChr.sh ${TAG} ${CHR})
 
 echo $jid1
 
