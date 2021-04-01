@@ -9,8 +9,13 @@ CHR=$2
 [[ -z "$CHR" ]] && { echo "ERROR: No CHR provided for this run"; exit 1; }
 
 source ${TAG}.config
-module load bcftools-1.9-gcc-5.4.0-b2hdt5n
-module load tabix-2013-12-16-gcc-5.4.0-xn3xiv7
+
+uid=`date | md5sum | cut -c1-8`
+RUN_NAME="${uid}"
+mkdir -p "$RUN_NAME/logs"
+cd $RUN_NAME
+cp ../${TAG}.config .
+
 
 # prepare files
 # Take VCF value and look to see if need to make CHR specific VCF file
@@ -21,16 +26,10 @@ then
   exit 1;
 fi
 
-
 # slurm_vcfChr.sh
-tabix -p vcf $VCF_ALL
-if [ ! -e $VCF ]
-then
-  echo "Need to create $VCF";
-  echo "chr$CHR $CHR" > $TAG.chrs
-  bcftools view $VCF_ALL --regions $CHR,chr$CHR | bcftools view -m2 -M2 -v snps | bcftools filter -e "QUAL < 20" | bcftools annotate --rename-chrs $TAG.chrs | bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > $VCF
-  tabix -p vcf $VCF
-fi
+jid1=$(sbatch -J ${SAMPLE}.fastq2sam ${HOME}/scripts/fastq2bam/fastq2sam.sh ${SAMPLE})
+
+echo $jid1
 
 echo $VCF
 echo $VCF_ALL
