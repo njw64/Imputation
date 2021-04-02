@@ -30,6 +30,3 @@ fi
 jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/slurm_vcfChr.sh ${TAG} ${CHR})
 
 echo $jid1
-
-echo $VCF
-echo $VCF_ALL
