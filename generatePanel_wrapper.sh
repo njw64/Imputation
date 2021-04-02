@@ -10,10 +10,7 @@ CHR=$2
 
 source ${TAG}.config
 
-uid=`date | md5sum | cut -c1-8`
-RUN_NAME="${uid}"
-mkdir -p "$RUN_NAME/logs"
-cd $RUN_NAME
+mkdir -p "$ID/logs"; cd $ID
 cp ../${TAG}.config .
 
 
@@ -26,7 +23,10 @@ then
   exit 1;
 fi
 
-# slurm_vcfChr.sh
-jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/slurm_vcfChr.sh ${TAG} ${CHR})
+# vcfChr.sh
+jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/vcfChr.sh ${TAG} ${CHR})
+# vcfQC.sh - convert VCF to plink; perform QC; check SNPs; convert back to VCF
+jid2=$(sbatch -J ${TAG}.vcfQC --dependency=afterok:${jid1##* } ${HOME}/scripts/fastq2bam/sam2bam.sh ${TAG} ${CHR})
 
-echo $jid1
+# The construct ${jid1##* } isolates the last word
+echo ${jid1##* }
