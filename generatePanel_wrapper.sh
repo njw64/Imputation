@@ -13,6 +13,8 @@ JOBS=""
 for TAG in `echo $PANELS | tr ':' "\n"`; do
   source ${TAG}.config
 
+  echo $TAG
+
   mkdir -p "$TAG/logs"; cd $TAG
   cp ../${TAG}.config .
 
@@ -37,6 +39,8 @@ for TAG in `echo $PANELS | tr ':' "\n"`; do
   echo $jid2
 
   JOBS+="${jid2##* }:"
+
+  cd ../
 
 done
 
