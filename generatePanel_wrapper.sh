@@ -16,6 +16,8 @@ for TAG in `echo $PANELS | tr ':' "\n"`; do
   mkdir -p "$TAG/logs"; cd $TAG
   cp ../${TAG}.config .
 
+  VCF=`dirname $VCF_ALL`
+  VCF+="broad-chr${CHR}.vcf.gz"
 
   # prepare files
   # Take VCF value and look to see if need to make CHR specific VCF file

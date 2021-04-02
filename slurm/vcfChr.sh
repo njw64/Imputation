@@ -35,12 +35,15 @@ CHR=$2
 
 source ${TAG}.config
 
+VCF=`dirname $VCF_ALL`
+VCF+="broad-chr${CHR}.vcf.gz"
+
 tabix -p vcf $VCF_ALL
 if [ ! -e $VCF ]
 then
   echo "Need to create $VCF";
   echo "chr$CHR $CHR" > $TAG.chrs
-  bcftools view $VCF_ALL --regions $CHR,chr$CHR | bcftools view -m2 -M2 -v snps | bcftools filter -e "QUAL < 20" | bcftools annotate --rename-chrs $TAG.chrs | bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > $VCF
+  bcftools view $VCF_ALL --regions $CHR,chr$CHR | bcftools annotate --rename-chrs $TAG.chrs | bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > $VCF
   tabix -p vcf $VCF
   rm -rf $TAG.chrs
 fi

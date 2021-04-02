@@ -35,6 +35,9 @@ ID=$1
 CHR=$2
 source ${ID}.config
 
+VCF=`dirname $VCF_ALL`
+VCF+="broad-chr${CHR}.vcf.gz"
+
 # rm -rf $ID
 # mkdir $ID; cd $ID
 mkdir step1; cd step1
