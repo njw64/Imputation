@@ -26,7 +26,7 @@ fi
 # vcfChr.sh
 jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/vcfChr.sh ${TAG} ${CHR})
 # vcfQC.sh - convert VCF to plink; perform QC; check SNPs; convert back to VCF
-jid2=$(sbatch -J ${TAG}.vcfQC --dependency=afterok:${jid1##* } ${HOME}/scripts/fastq2bam/sam2bam.sh ${TAG} ${CHR})
+jid2=$(sbatch -J ${TAG}.vcfQC --dependency=afterok:${jid1##* } ${HOME}/scripts/Imputation/slurm/vcfQC.sh ${TAG} ${CHR})
 
 # The construct ${jid1##* } isolates the last word
 echo ${jid1##* }
