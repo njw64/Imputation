@@ -33,10 +33,11 @@ module load tabix-2013-12-16-gcc-5.4.0-xn3xiv7    # bgzip/tabix
 TAG=$1
 CHR=$2
 
-source ${TAG}.config
+source setup.config
 
+VCF_ALL=${!TAG}
 VCF=`dirname $VCF_ALL`
-VCF+="broad-chr${CHR}.vcf.gz"
+VCF+="${TAG}-chr${CHR}.vcf.gz"
 
 tabix -p vcf $VCF_ALL
 if [ ! -e $VCF ]

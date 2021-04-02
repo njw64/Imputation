@@ -9,17 +9,18 @@ PANELS=$2
 [[ -z "$PANELS" ]] && { echo "ERROR: No PANELS provided for this run"; exit 1; }
 
 JOBS=""
+source setup.config
 
 for TAG in `echo $PANELS | tr ':' "\n"`; do
-  source ${TAG}.config
 
   echo $TAG
 
   mkdir -p "$TAG/logs"; cd $TAG
-  cp ../${TAG}.config .
+  cp ../setup.config .
 
+  VCF_ALL=${!TAG}
   VCF=`dirname $VCF_ALL`
-  VCF+="broad-chr${CHR}.vcf.gz"
+  VCF+="${TAG}-chr${CHR}.vcf.gz"
 
   # prepare files
   # Take VCF value and look to see if need to make CHR specific VCF file

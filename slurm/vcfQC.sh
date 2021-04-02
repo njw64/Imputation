@@ -33,10 +33,11 @@ module load plink-1.9-gcc-5.4.0-sm3ojoi           # plink/plinkdog
 
 ID=$1
 CHR=$2
-source ${ID}.config
+source setup.config
 
+VCF_ALL=${!TAG}
 VCF=`dirname $VCF_ALL`
-VCF+="broad-chr${CHR}.vcf.gz"
+VCF+="${TAG}-chr${CHR}.vcf.gz"
 
 # rm -rf $ID
 # mkdir $ID; cd $ID
