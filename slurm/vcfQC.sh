@@ -41,8 +41,6 @@ VCF+="/${TAG}-chr${CHR}.vcf.gz"
 # mkdir $TAG; cd $TAG
 mkdir step1; cd step1
 
-PLINK='plink --noweb --dog --allow-no-sex --nonfounders'
-
 # filter SNPS & annotate TAG
 bcftools view -m2 -M2 -v snps ${VCF} | bcftools filter -e "QUAL < 20" | bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > chr${CHR}.snps.id.vcf.gz
 
