@@ -57,7 +57,8 @@ then
   # SUBMIT JOB ARRAY!
   count=`ls ${BAM_FILES}/*.bam | wc -l`
   jid3=$(sbatch -J ${PROJECT}.bams --array=1-${count} ${HOME}/scripts/Imputation/slurm/prepareBamFiles.sh ${PROJECT} ${CHR})
-  # 
+  #
+  echo $jid3 
   #JOBS+="${jid3##* }:"
 fi
 

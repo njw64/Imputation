@@ -21,7 +21,7 @@
 #! For 6GB per CPU, set "-p skylake"; for 12GB per CPU, set "-p skylake-himem":
 #SBATCH -p skylake
 
-#SBATCH -o logs/job-%j.out
+#SBATCH -o logs/job-%A_%a.out
 
 module purge                               # Removes all modules still loaded
 module load rhel7/default-peta4            # REQUIRED - loads the basic environment
@@ -32,5 +32,6 @@ PROJECT=$1
 CHR=$2
 source setup.config
 
-FILE=$(ls ${BAM_FILES}*.bam | sed -n ${SLURM_ARRAY_TASK_ID}p)
-samtools view -b ${FILE} 30 > ${BAM_FILES}/chr${CHR}/chr${CHR}-$FILE
+FILE=$(ls ${BAM_FILES}/*.bam | sed -n ${SLURM_ARRAY_TASK_ID}p)
+F_NAME=`basename ${FILE}`
+samtools view -b ${FILE} 30 > ${BAM_FILES}/chr${CHR}/chr${CHR}-${F_NAME}
