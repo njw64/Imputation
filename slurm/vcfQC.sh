@@ -3,8 +3,6 @@
 #! RUN : sbatch vcfQC.sh <TAG> <CHR>
 
 #! sbatch directives begin here ###############################
-#! Name of the job:
-##SBATCH -J vcfQC
 #! Which project should be charged:
 #SBATCH -A GODOGS-SL2-CPU
 #! How many whole nodes should be allocated?
