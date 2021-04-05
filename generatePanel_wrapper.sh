@@ -48,7 +48,6 @@ for TAG in `echo $REF_PANELS:$PROJECT | tr ':' "\n"`; do
 
 done
 
-
 # prepare BAM files...
 if [ ! -e $BAM_FILES/chr${CHR} ]
 then
@@ -57,19 +56,17 @@ then
   # SUBMIT JOB ARRAY!
   count=`ls ${BAM_FILES}/*.bam | wc -l`
   jid3=$(sbatch -J ${PROJECT}.bams --array=1-${count} ${HOME}/scripts/Imputation/slurm/prepareBamFiles.sh ${PROJECT} ${CHR})
-  #
-  echo $jid3 
   #JOBS+="${jid3##* }:"
 fi
 
 #echo "${JOBS::-1}"
-
 pwd
-exit;
 
 # once all 2nd jobs AND job#3 have finished
 # merge reference panles together - details by REF_PANELS varaible in setup.config
 # mergeRefPanels.sh
 # jid3=$(sbatch -J ${PROJECT}.mergeRed --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
 jid4=$(sbatch -J ${PROJECT}.mergeRef ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
-echo $jid4
+# fillProjectGaps.sh
+jid5=$(sbatch -J ${PROJECT}.fillGaps --dependency=afterok:${jid4##* } ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
+echo $jid5
