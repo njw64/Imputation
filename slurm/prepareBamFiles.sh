@@ -11,7 +11,7 @@
 #! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
 #SBATCH --ntasks=1
 #! How much wallclock time will be required?
-#SBATCH --time=1:00:00
+#SBATCH --time=0:30:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=ALL
 ##SBATCH --mail-type=FAIL
@@ -35,3 +35,4 @@ source setup.config
 FILE=$(ls ${BAM_FILES}/*.bam | sed -n ${SLURM_ARRAY_TASK_ID}p)
 F_NAME=`basename ${FILE}`
 samtools view -b ${FILE} 30 > ${BAM_FILES}/chr${CHR}/chr${CHR}-${F_NAME}
+samtools index ${BAM_FILES}/chr${CHR}/chr${CHR}-${F_NAME}
