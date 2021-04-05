@@ -7,10 +7,10 @@ CHR=$1
 PROJECT=$2
 
 [[ -z "$CHR" ]] && { echo "ERROR: No CHR provided for this run"; exit 1; }
-[[ -z "$PROJECT" ]] && { echo "ERROR: No PANELS provided for this run"; exit 1; }
+[[ -z "$PROJECT" ]] && { echo "ERROR: No PROJECT provided for this run"; exit 1; }
 
 JOBS=""
-mkdir chr${CHR}; cd chr${CHR};
+mkdir -p chr${CHR}/logs; cd chr${CHR};
 cp ../setup.config .
 source setup.config
 
@@ -18,7 +18,7 @@ for TAG in `echo $REF_PANELS:$PROJECT | tr ':' "\n"`; do
 
   echo $TAG
 
-  mkdir -p "$TAG/logs"; cd $TAG
+  mkdir "$TAG"; cd $TAG
   cp ../setup.config .
 
   VCF_ALL=${!TAG}
@@ -50,8 +50,11 @@ done
 
 #echo "${JOBS::-1}"
 
+pwd
+
 # once all 2nd jobs have finished
 # merge reference panles together - details by REF_PANELS varaible in setup.config
 # mergeRefPanels.sh
-# jid3=$(sbatch -J ${TAG}.mergeRed --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
-jid3=$(sbatch -J ${TAG}.mergeRef ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
+# jid3=$(sbatch -J ${PROJECT}.mergeRed --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
+jid3=$(sbatch -J ${PROJECT}.mergeRef ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
+echo $jid3
