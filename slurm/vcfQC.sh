@@ -31,31 +31,33 @@ module load bcftools-1.9-gcc-5.4.0-b2hdt5n        # bcftools
 module load tabix-2013-12-16-gcc-5.4.0-xn3xiv7    # bgzip/tabix
 module load plink-1.9-gcc-5.4.0-sm3ojoi           # plink/plinkdog
 
-ID=$1
+TAG=$1
 CHR=$2
 source setup.config
 
 VCF_ALL=${!TAG}
 VCF=`dirname $VCF_ALL`
-VCF+="${TAG}-chr${CHR}.vcf.gz"
+VCF+="/${TAG}-chr${CHR}.vcf.gz"
 
-# rm -rf $ID
-# mkdir $ID; cd $ID
+# rm -rf $TAG
+# mkdir $TAG; cd $TAG
 mkdir step1; cd step1
 
-# filter SNPS & annotate ID
+PLINK='plink --noweb --dog --allow-no-sex --nonfounders'
+
+# filter SNPS & annotate TAG
 bcftools view -m2 -M2 -v snps ${VCF} | bcftools filter -e "QUAL < 20" | bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > chr${CHR}.snps.id.vcf.gz
 
 # vcf2PLINK
-plinkdog --const-fid 0 --vcf chr${CHR}.snps.id.vcf.gz --out ${ID}.1
+eval "$PLINK --const-fid 0 --vcf chr${CHR}.snps.id.vcf.gz --out ${TAG}.1"
 
 # remove duplicate SNPs
-grep -v '#' ${ID}.1.bim | cut -f 2 | sort | uniq -d > snps.dups
-plinkdog --bfile ${ID}.1 --exclude snps.dups --make-bed --out ${ID}.2
+grep -v '#' ${TAG}.1.bim | cut -f 2 | sort | uniq -d > snps.dups
+eval "$PLINK --bfile ${TAG}.1 --exclude snps.dups --make-bed --out ${TAG}.2"
 
 # rename & filter SNPs 
-cut -f 2 ${ID}.2.bim | perl -lane '$col1 = $_; $_ =~ s/chr//g; print $col1."\t".$_;' > snps.map  
-plinkdog --bfile ${ID}.2 --make-bed --update-map snps.map --update-name --mind 0.1 --out ${ID}.3
+cut -f 2 ${TAG}.2.bim | perl -lane '$col1 = $_; $_ =~ s/chr//g; print $col1."\t".$_;' > snps.map  
+eval "$PLINK --bfile ${TAG}.2 --make-bed --update-map snps.map --update-name --mind 0.1 --out ${TAG}.3"
 
 # create file of original reference alleles
 bcftools query --format '%ID\t%REF\n' chr${CHR}.snps.id.vcf.gz > ref-alleles
@@ -63,11 +65,11 @@ perl -lane '$_ =~ s/chr//; print $_;' ref-alleles > tmp
 mv tmp ref-alleles 
 
 # convert back to VCF
-plinkdog --bfile ${ID}.3 --recode vcf-iid --a2-allele ref-alleles --real-ref-alleles --out ${ID}
-bgzip -f ${ID}.vcf; tabix -p vcf ${ID}.vcf.gz
+eval "$PLINK --bfile ${TAG}.3 --recode vcf-iid --a2-allele ref-alleles --real-ref-alleles --out ${TAG}"
+bgzip -f ${TAG}.vcf; tabix -p vcf ${TAG}.vcf.gz
 
 # export BED file of SNPs
-awk -v OFS="\t" '{print $1, $4-1, $4, $2}' ${ID}.3.bim > ${ID}.snps.bed
+awk -v OFS="\t" '{print $1, $4-1, $4, $2}' ${TAG}.3.bim > ${TAG}.snps.bed
 
-cp ${ID}.snps.bed ../
-cp ${ID}.vcf.gz* ../
+cp ${TAG}.snps.bed ../
+cp ${TAG}.vcf.gz* ../

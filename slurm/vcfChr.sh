@@ -37,7 +37,7 @@ source setup.config
 
 VCF_ALL=${!TAG}
 VCF=`dirname $VCF_ALL`
-VCF+="${TAG}-chr${CHR}.vcf.gz"
+VCF+="/${TAG}-chr${CHR}.vcf.gz"
 
 tabix -p vcf $VCF_ALL
 if [ ! -e $VCF ]
