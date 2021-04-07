@@ -34,5 +34,5 @@ source setup.config
 
 FILE=$(ls ${BAM_FILES}/*.bam | sed -n ${SLURM_ARRAY_TASK_ID}p)
 F_NAME=`basename ${FILE}`
-samtools view -b ${FILE} 30 > ${BAM_FILES}/chr${CHR}/chr${CHR}-${F_NAME}
+samtools view -b ${FILE} ${CHR} > ${BAM_FILES}/chr${CHR}/chr${CHR}-${F_NAME}
 samtools index ${BAM_FILES}/chr${CHR}/chr${CHR}-${F_NAME}

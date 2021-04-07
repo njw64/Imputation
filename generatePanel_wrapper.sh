@@ -56,7 +56,7 @@ then
   # SUBMIT JOB ARRAY!
   count=`ls ${BAM_FILES}/*.bam | wc -l`
   jid3=$(sbatch -J ${PROJECT}.bams --array=1-${count} ${HOME}/scripts/Imputation/slurm/prepareBamFiles.sh ${PROJECT} ${CHR})
-  #JOBS+="${jid3##* }:"
+  JOBS+="${jid3##* }:"
 fi
 
 #echo "${JOBS::-1}"
@@ -66,14 +66,15 @@ pwd
 # merge reference panles together - details by REF_PANELS varaible in setup.config
 
 # mergeRefPanels.sh
-# jid4=$(sbatch -J ${PROJECT}.mergeRed --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
+#jid4=$(sbatch -J ${PROJECT}.mergeRed --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
 #jid4=$(sbatch -J ${PROJECT}.mergeRef ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
 
 # fillProjectGaps.sh
 #jid5=$(sbatch -J ${PROJECT}.fillGaps --dependency=afterok:${jid4##* } ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
+jid5=$(sbatch -J ${PROJECT}.fillGaps ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
 
 # addRefSNPs.sh
-#jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
-jid6=$(sbatch -J ${PROJECT}.addRefSNPs ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
+jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
+#jid6=$(sbatch -J ${PROJECT}.addRefSNPs ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
 
 echo $jid6
