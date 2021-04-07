@@ -21,7 +21,7 @@
 #! For 6GB per CPU, set "-p skylake"; for 12GB per CPU, set "-p skylake-himem":
 #SBATCH -p skylake
 
-#SBATCH -o logs/job-%j.out
+#SBATCH -o logs/job-%A_%a.out
 
 module purge                               # Removes all modules still loaded
 module load rhel7/default-peta4            # REQUIRED - loads the basic environment
@@ -35,5 +35,5 @@ source setup.config
 
 cd $PROJECT/addRefSNPs
 
-ls ${BAM_FILES}/chr${CHR}/*.bam > bams.list
-bcftools mpileup -R ref.uniq.snps.bed -f ${GENOME} -I -b bams.list | bcftools filter -s readDepth -e 'DP<10 || DP>100'| bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > ${PROJECT}.extra.vcf.gz
+FILE=$(ls file* | sed -n ${SLURM_ARRAY_TASK_ID}p)
+bcftools mpileup -R ${FILE} -f ${GENOME} -I -b bams.list | bcftools filter -s readDepth -e 'DP<10 || DP>100'| bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > ${FILE}.extra.vcf.gz
