@@ -11,7 +11,7 @@
 #! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
 #SBATCH --ntasks=1
 #! How much wallclock time will be required?
-#SBATCH --time=12:00:00
+#SBATCH --time=02:00:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=ALL
 ##SBATCH --mail-type=FAIL

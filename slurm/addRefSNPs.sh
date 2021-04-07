@@ -35,6 +35,13 @@ source setup.config
 
 cd ${PROJECT}/addRefSNPs
 
+# remove split bed files
+# rm -rf file*.bed
+
+# concat all extra VCF files back to a single file - aka "GATHER"
+ls extra.file*.gz > vcf-files.list
+bcftools concat -f vcf-files.list | bgzip -c > ${PROJECT}.extra.vcf.gz
+
 # call SNPs & remove them
 bcftools call -Ov -mv ${PROJECT}.extra.vcf.gz > out.vcf
 

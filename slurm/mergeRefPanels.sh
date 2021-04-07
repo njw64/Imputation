@@ -56,7 +56,7 @@ subtractBed -a ../../${PROJECT}.ref-panel.snps.bed -b ../${PROJECT}.snps.bed -A 
 # create file of BAM file
 ls ${BAM_FILES}/chr${CHR}/*.bam > bams.list
 
-# split ref.uniq.snps.bed into 16 files to enable next step to be run as an array
+# split ref.uniq.snps.bed into 16 files to enable next step to be run as an array - aka "SCATTER"
 x=`wc -l ref.uniq.snps.bed`
 z=$(((${x% *}+15) / 16))
 split -l $z ref.uniq.snps.bed file
