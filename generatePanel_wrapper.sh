@@ -35,14 +35,14 @@ for TAG in `echo $REF_PANELS:$PROJECT | tr ':' "\n"`; do
 
   # The construct ${jid1##* } isolates the last word from "Submitted batch job XXXXXX" - returns XXXXXX
   # vcfChr.sh
-  #jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/vcfChr.sh ${TAG} ${CHR})
+  jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/vcfChr.sh ${TAG} ${CHR})
   # vcfQC.sh - convert VCF to plink; perform QC; check SNPs; convert back to VCF
-  #jid2=$(sbatch -J ${TAG}.vcfQC --dependency=afterok:${jid1##* } ${HOME}/scripts/Imputation/slurm/vcfQC.sh ${TAG} ${CHR})
+  jid2=$(sbatch -J ${TAG}.vcfQC --dependency=afterok:${jid1##* } ${HOME}/scripts/Imputation/slurm/vcfQC.sh ${TAG} ${CHR})
 
-  #echo $jid1
-  #echo $jid2
+  echo $jid1
+  echo $jid2
 
-  #JOBS+="${jid2##* }:"
+  JOBS+="${jid2##* }:"
 
   cd ../
 
@@ -66,15 +66,15 @@ pwd
 # merge reference panles together - details given by REF_PANELS varaible in setup.config
 
 # mergeRefPanels.sh
-#jid4=$(sbatch -J ${PROJECT}.mergeRed --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
+jid4=$(sbatch -J ${PROJECT}.mergeRed --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
 #jid4=$(sbatch -J ${PROJECT}.mergeRef ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT})
 
 # fillProjectGaps.sh
-#jid5=$(sbatch -J ${PROJECT}.fillGaps --array=1-16 --dependency=afterok:${jid4##* } ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
+jid5=$(sbatch -J ${PROJECT}.fillGaps --array=1-16 --dependency=afterok:${jid4##* } ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
 #jid5=$(sbatch -J ${PROJECT}.fillGaps --array=1-16 ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
 
 # addRefSNPs.sh
-#jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
-jid6=$(sbatch -J ${PROJECT}.addRefSNPs ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
+jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
+#jid6=$(sbatch -J ${PROJECT}.addRefSNPs ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
 
 echo $jid6
