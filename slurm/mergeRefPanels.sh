@@ -30,6 +30,7 @@ module load tabix-2013-12-16-gcc-5.4.0-xn3xiv7    # bgzip/tabix
 module load bedtools/2.20.1                       # bedtools
 
 PROJECT=$1
+CHR=$2
 source setup.config
 
 REF=""
