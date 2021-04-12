@@ -35,6 +35,5 @@ source setup.config
 
 cd $PROJECT/addRefSNPs
 
-FILE=$(ls file* | sed -n ${SLURM_ARRAY_TASK_ID}p)
-mv ${FILE} ${FILE}.bed
+FILE=$(ls file*.bed | sed -n ${SLURM_ARRAY_TASK_ID}p)
 bcftools mpileup -R ${FILE}.bed -f ${GENOME} -I -b bams.list | bcftools filter -s readDepth -e 'DP<10 || DP>100'| bcftools annotate --set-id +'%CHROM:%POS' | bgzip -c > extra.${FILE}.vcf.gz
