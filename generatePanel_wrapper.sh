@@ -74,7 +74,14 @@ jid5=$(sbatch -J ${PROJECT}.fillGaps --array=1-16 --dependency=afterok:${jid4##*
 #jid5=$(sbatch -J ${PROJECT}.fillGaps --array=1-16 ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
 
 # addRefSNPs.sh
-jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
+jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT} ${CHR})
 #jid6=$(sbatch -J ${PROJECT}.addRefSNPs ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT})
+
+# preparePanel.sh
+jid7=$(sbatch -J ${PROJECT}.preparePanel --dependency=afterok:${jid6##* } ${HOME}/scripts/Imputation/slurm/preparePanel.sh ${PROJECT} ${CHR})
+
+# shapeitPanel.sh
+jid8=$(sbatch -J ${PROJECT}.shapeit --dependency=afterok:${jid7##* } ${HOME}/scripts/Imputation/slurm/shapeitPanel.sh ${PROJECT} ${CHR})
+
 
 echo $jid6

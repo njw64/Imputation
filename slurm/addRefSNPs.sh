@@ -31,9 +31,14 @@ module load tabix-2013-12-16-gcc-5.4.0-xn3xiv7    # bgzip/tabix
 module load plink-1.9-gcc-5.4.0-sm3ojoi           # plink/plinkdog
 
 PROJECT=$1
+CHR=$2
 source setup.config
 
 cd ${PROJECT}/addRefSNPs
+
+VCF_ALL=${!PROJECT}
+VCF=`dirname $VCF_ALL`
+VCF+="/${PROJECT}-chr${CHR}.vcf.gz"
 
 # remove split bed files
 # rm -rf file*.bed
@@ -64,17 +69,17 @@ bcftools annotate -x FILTER ../../${PROJECT}.ref-panel.vcf.gz | bcftools view --
 # vcf2PLINK
 eval "$PLINK --const-fid 0 --vcf ${PROJECT}.extra.vcf --out ${PROJECT}.extra"
 
-# merge with .2
-eval "$PLINK --bfile ../vcf2plink/${PROJECT}.2 --bmerge ${PROJECT}.extra --make-bed --out extra"
+# merge with .2 from step1
+eval "$PLINK --bfile ../step1/${PROJECT}.2 --bmerge ${PROJECT}.extra --make-bed --out extra"
 if [ -f "extra-merge.missnp" ]; then
   eval "$PLINK --bfile ${PROJECT}.extra --exclude extra-merge.missnp --make-bed --out temp"
-  eval "$PLINK --bfile ../vcf2plink/${PROJECT}.2 --bmerge temp --make-bed --out extra"
+  eval "$PLINK --bfile ../step1/${PROJECT}.2 --bmerge temp --make-bed --out ${PROJECT}.extra"
   # rm -rf temp* extra-merge*
 fi
 
 # filter SNPs and overwrite .3 from original run
 # NB. do not use maf as all hom/ref AND hom/alt snps will be removed!
-eval "$PLINK --bfile extra --mind 0.1 --geno 0.03 --make-bed --out ${PROJECT}.3"
+eval "$PLINK --bfile ${PROJECT}.extra --mind 0.1 --geno 0.03 --make-bed --out ${PROJECT}.3"
 eval "$PLINK --bfile ${PROJECT}.3 --recode vcf-iid --a2-allele ref-alleles --real-ref-alleles --out ${PROJECT}"
 bgzip ${PROJECT}.vcf; tabix -p vcf ${PROJECT}.vcf.gz
 
@@ -84,14 +89,3 @@ awk -v OFS="\t" '{print $1, $4-1, $4, $2}' ${PROJECT}.3.bim > ${PROJECT}.snps.be
 rm -rf extra.* 
 cp ${PROJECT}.snps.bed ../
 cp ${PROJECT}.vcf.gz* ../
-
-cd ../
-
-bcftools merge -m id --force-samples --missing-to-ref ../${PROJECT}.ref-panel.vcf.gz ${PROJECT}.vcf.gz > merged.vcf
-bcftools query -l merged.vcf| grep ':' > samples.dups
-bcftools view -Ov -S ^samples.dups merged.vcf | bcftools view -m2 -M2 -v snps | bgzip -c > ${PROJECT}.panel.vcf.gz
-tabix -p vcf ${PROJECT}.panel.vcf.gz
-
-mv ${PROJECT}.panel.vcf.gz* ../
-
-rm -rf merged.vcf samples.dups

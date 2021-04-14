@@ -49,6 +49,8 @@ rm -rf merged.vcf samples.dups
 # prepare for adding ref SNPs to the PROJECT VCF
 cd ${PROJECT}
 mkdir addRefSNPs; cd addRefSNPs
+rm -rf file*
+
 # create bed file of VCF panel
 bcftools view -H ../../${PROJECT}.ref-panel.vcf.gz| awk  -v OFS='\t' '{print $1, $2-1, $2, $3}' > ../../${PROJECT}.ref-panel.snps.bed
 # create list of unique SNPs in ref panel
@@ -61,5 +63,8 @@ ls ${BAM_FILES}/chr${CHR}/*.bam > bams.list
 x=`wc -l ref.uniq.snps.bed`
 z=$(((${x% *}+15) / 16))
 split -l $z ref.uniq.snps.bed file
+for FILE in `ls file*`; do
+  mv ${FILE} ${FILE}.bed
+done
 
 cd ../../
