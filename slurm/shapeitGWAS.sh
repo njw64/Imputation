@@ -23,6 +23,8 @@
 #! For 6GB per CPU, set "-p skylake"; for 12GB per CPU, set "-p skylake-himem":
 #SBATCH -p skylake
 
+#SBATCH -o ../logs/job-%j.out
+
 CHR=$1
 source ../setup.config
 
