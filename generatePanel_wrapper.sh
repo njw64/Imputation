@@ -77,7 +77,4 @@ jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${SCRIPT
 jid7=$(sbatch -J ${PROJECT}.preparePanel --dependency=afterok:${jid6##* } ${SCRIPTS}/slurm/preparePanel.sh ${PROJECT} ${CHR})
 
 # shapeitPanel.sh
-jid8=$(sbatch -J ${PROJECT}.shapeit --dependency=afterok:${jid7##* } ${SCRIPTS}/slurm/shapeitPanel.sh ${PROJECT} ${CHR})
-
-
-echo $jid8
+sbatch -J ${PROJECT}.shapeit --dependency=afterok:${jid7##* } ${SCRIPTS}/slurm/shapeitPanel.sh ${PROJECT} ${CHR}
