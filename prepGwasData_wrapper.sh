@@ -15,5 +15,6 @@ cp ../setup.config .
 source setup.config
 
 mkdir $GWAS_PLINK; cd $GWAS_PLINK
+
 jid1=$(sbatch -J ${GWAS_PLINK}.prep ${HOME}/scripts/Imputation/slurm/prepareGWAS.sh ${CHR})
 jid2=$(sbatch -J ${GWAS_PLINK}.shapeit --dependency=afterok:${jid1##* } ${HOME}/scripts/Imputation/slurm/shapeitGWAS.sh ${CHR})

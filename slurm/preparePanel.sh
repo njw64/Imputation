@@ -35,8 +35,9 @@ CHR=$2
 source setup.config
 
 cd ${PROJECT}
+mkdir shapeit; cd shapeit
 
-bcftools merge -m id --force-samples --missing-to-ref ../${PROJECT}.ref-panel.vcf.gz ${PROJECT}.vcf.gz > merged.vcf
+bcftools merge -m id --force-samples --missing-to-ref ../../${PROJECT}.ref-panel.vcf.gz ../${PROJECT}.vcf.gz > merged.vcf
 bcftools query -l merged.vcf| grep ':' > samples.dups
 bcftools view -Ov -S ^samples.dups merged.vcf | bcftools view -m2 -M2 -v snps | bgzip -c > ${PROJECT}.panel.vcf.gz
 tabix -p vcf ${PROJECT}.panel.vcf.gz

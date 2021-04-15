@@ -3,8 +3,6 @@
 #! RUN : sbatch shapeitPanel.sh 
 
 #! sbatch directives begin here ###############################
-#! Name of the job:
-#SBATCH -J shapeit
 #! Which project should be charged:
 #SBATCH -A GODOGS-SL2-CPU
 #! How many whole nodes should be allocated?
@@ -23,9 +21,16 @@
 #! For 6GB per CPU, set "-p skylake"; for 12GB per CPU, set "-p skylake-himem":
 #SBATCH -p skylake
 
+#SBATCH -o ../logs/job-%j.out
+
+module purge                               # Removes all modules still loaded
+module load rhel7/default-peta4            # REQUIRED - loads the basic environment
+
 PROJECT=$1
 CHR=$2
 source setup.config
+
+cd ${PROJECT}/shapeit
 
 shapeit -M ${MAPS}/chr${CHR}.cf3.1_map.txt -B ${PROJECT}.ref-panel -O ${PROJECT}.phased -T 8 --window 2 --effective-size 200 --force
 shapeit -convert --input-haps ${PROJECT}.phased --output-ref ${PROJECT}.phased.impute

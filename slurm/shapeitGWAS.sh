@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-#! RUN : sbatch shapeit.sh 
+#! RUN : sbatch shapeitGWAS.sh 
 
 #! sbatch directives begin here ###############################
-#! Name of the job:
-#SBATCH -J shapeit
 #! Which project should be charged:
 #SBATCH -A GODOGS-SL2-CPU
 #! How many whole nodes should be allocated?
@@ -13,7 +11,7 @@
 #! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
 #SBATCH --ntasks=8
 #! How much wallclock time will be required?
-#SBATCH --time 12:00:00
+#SBATCH --time 00:30:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=ALL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -24,6 +22,9 @@
 #SBATCH -p skylake
 
 #SBATCH -o ../logs/job-%j.out
+
+module purge                               # Removes all modules still loaded
+module load rhel7/default-peta4            # REQUIRED - loads the basic environment
 
 CHR=$1
 source ../setup.config
