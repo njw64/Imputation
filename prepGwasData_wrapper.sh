@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-#! RUN : bash generatePanel_wrapper.sh <CHR> <PROJECT>
-#! Eg. : bash generatePanel_wrapper.sh 13 go_lab
+#! RUN : bash prepGwasData_wrapper.sh <CHR>
+#! Eg. : bash prepGwasData_wrapper.sh 13
 
 CHR=$1
 SCRIPTS=`dirname $0`
