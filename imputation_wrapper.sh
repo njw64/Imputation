@@ -11,6 +11,7 @@ PROJECT=$2
 [[ ! -e chr${CHR} ]] && { echo "No directory exists for chr ${CHR}"; exit 1; }
 
 cd chr${CHR};
+source setup.config
 
 # Check that the PROJECT haplotypes and legend files exist
 if [[ ! -e ${PROJECT}/shapeit/${PROJECT}.phased.impute.haplotypes && -e ${PROJECT}/shapeit/${PROJECT}.phased.impute.legend ]]
@@ -27,4 +28,4 @@ then
 fi
 
 # Files exist so we are ready to impute!
-jid1=$(sbatch -J ${GWAS_PLINK}.impute ${HOME}/scripts/Imputation/slurm/runImpute.sh ${PROJECT} ${CHR})
+sbatch -J ${GWAS_PLINK}.impute ${HOME}/scripts/Imputation/slurm/runImpute.sh ${PROJECT} ${CHR}
