@@ -5,6 +5,7 @@
 
 CHR=$1
 PROJECT=$2
+SCRIPTS=`dirname $0`
 
 [[ -z "$CHR" ]] && { echo "ERROR: No CHR provided for this run"; exit 1; }
 [[ -z "$PROJECT" ]] && { echo "ERROR: No PROJECT provided for this run"; exit 1; }
@@ -12,6 +13,7 @@ PROJECT=$2
 
 cd chr${CHR};
 source setup.config
+
 
 # Check that the PROJECT haplotypes and legend files exist
 if [[ ! -e ${PROJECT}/shapeit/${PROJECT}.phased.impute.haplotypes && -e ${PROJECT}/shapeit/${PROJECT}.phased.impute.legend ]]
@@ -28,4 +30,4 @@ then
 fi
 
 # Files exist so we are ready to impute!
-sbatch -J ${GWAS_PLINK}.impute ${HOME}/scripts/Imputation/slurm/runImpute.sh ${PROJECT} ${CHR}
+sbatch -J ${GWAS_PLINK}.impute ${SCRIPTS}/slurm/runImpute.sh ${PROJECT} ${CHR}

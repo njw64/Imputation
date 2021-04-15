@@ -5,6 +5,7 @@
 
 CHR=$1
 PROJECT=$2
+SCRIPTS=`dirname $0`
 
 [[ -z "$CHR" ]] && { echo "ERROR: No CHR provided for this run"; exit 1; }
 [[ -z "$PROJECT" ]] && { echo "ERROR: No PROJECT provided for this run"; exit 1; }
@@ -35,9 +36,9 @@ for TAG in `echo $REF_PANELS:$PROJECT | tr ':' "\n"`; do
 
   # The construct ${jid1##* } isolates the last word from "Submitted batch job XXXXXX" - returns XXXXXX
   # vcfChr.sh
-  jid1=$(sbatch -J ${TAG}.vcfChr ${HOME}/scripts/Imputation/slurm/vcfChr.sh ${TAG} ${CHR})
+  jid1=$(sbatch -J ${TAG}.vcfChr ${SCRIPTS}/slurm/vcfChr.sh ${TAG} ${CHR})
   # vcfQC.sh - convert VCF to plink; perform QC; check SNPs; convert back to VCF
-  jid2=$(sbatch -J ${TAG}.vcfQC --dependency=afterok:${jid1##* } ${HOME}/scripts/Imputation/slurm/vcfQC.sh ${TAG} ${CHR})
+  jid2=$(sbatch -J ${TAG}.vcfQC --dependency=afterok:${jid1##* } ${SCRIPTS}/slurm/vcfQC.sh ${TAG} ${CHR})
 
   #echo $jid1
   #echo $jid2
@@ -55,7 +56,7 @@ then
   mkdir "${BAM_FILES}/chr${CHR}"
   # SUBMIT JOB ARRAY!
   count=`ls ${BAM_FILES}/*.bam | wc -l`
-  jid3=$(sbatch -J ${PROJECT}.bams --array=1-${count} ${HOME}/scripts/Imputation/slurm/prepareBamFiles.sh ${PROJECT} ${CHR})
+  jid3=$(sbatch -J ${PROJECT}.bams --array=1-${count} ${SCRIPTS}/slurm/prepareBamFiles.sh ${PROJECT} ${CHR})
   JOBS+="${jid3##* }:"
 fi
 
@@ -64,19 +65,19 @@ fi
 # merge reference panles together - details given by REF_PANELS varaible in setup.config
 
 # mergeRefPanels.sh
-jid4=$(sbatch -J ${PROJECT}.mergeRef --dependency=afterok:${JOBS::-1} ${HOME}/scripts/Imputation/slurm/mergeRefPanels.sh ${PROJECT} ${CHR})
+jid4=$(sbatch -J ${PROJECT}.mergeRef --dependency=afterok:${JOBS::-1} ${SCRIPTS}/slurm/mergeRefPanels.sh ${PROJECT} ${CHR})
 
 # fillProjectGaps.sh
-jid5=$(sbatch -J ${PROJECT}.fillGaps --array=1-16 --dependency=afterok:${jid4##* } ${HOME}/scripts/Imputation/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
+jid5=$(sbatch -J ${PROJECT}.fillGaps --array=1-16 --dependency=afterok:${jid4##* } ${SCRIPTS}/slurm/fillProjectGaps.sh ${PROJECT} ${CHR})
 
 # addRefSNPs.sh
-jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${HOME}/scripts/Imputation/slurm/addRefSNPs.sh ${PROJECT} ${CHR})
+jid6=$(sbatch -J ${PROJECT}.addRefSNPs --dependency=afterok:${jid5##* } ${SCRIPTS}/slurm/addRefSNPs.sh ${PROJECT} ${CHR})
 
 # preparePanel.sh
-jid7=$(sbatch -J ${PROJECT}.preparePanel --dependency=afterok:${jid6##* } ${HOME}/scripts/Imputation/slurm/preparePanel.sh ${PROJECT} ${CHR})
+jid7=$(sbatch -J ${PROJECT}.preparePanel --dependency=afterok:${jid6##* } ${SCRIPTS}/slurm/preparePanel.sh ${PROJECT} ${CHR})
 
 # shapeitPanel.sh
-jid8=$(sbatch -J ${PROJECT}.shapeit --dependency=afterok:${jid7##* } ${HOME}/scripts/Imputation/slurm/shapeitPanel.sh ${PROJECT} ${CHR})
+jid8=$(sbatch -J ${PROJECT}.shapeit --dependency=afterok:${jid7##* } ${SCRIPTS}/slurm/shapeitPanel.sh ${PROJECT} ${CHR})
 
 
 echo $jid8
