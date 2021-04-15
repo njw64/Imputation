@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-#! RUN : bash generatePanel_wrapper.sh <CHR> <PROJECT>
-#! Eg. : bash generatePanel_wrapper.sh 13 go_lab
+#! RUN : bash imputaion_wrapper.sh <CHR> <PROJECT>
+#! Eg. : bash imputaion_wrapper.sh 13 go_lab
 
 CHR=$1
 PROJECT=$2
