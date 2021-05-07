@@ -7,6 +7,7 @@ CHR=$1
 PROJECT=$2
 SCRIPTS=`dirname $0`
 
+# Check that variables are provided and if not exit the script
 [[ -z "$CHR" ]] && { echo "ERROR: No CHR provided for this run"; exit 1; }
 [[ -z "$PROJECT" ]] && { echo "ERROR: No PROJECT provided for this run"; exit 1; }
 
