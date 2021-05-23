@@ -29,5 +29,7 @@ module load rhel7/default-peta4            # REQUIRED - loads the basic environm
 CHR=$1
 source ../setup.config
 
+PATH=$PATH:/rfs/project/rfs-x31eBTdMHgM/Software/local/bin/
+
 shapeit -M ${MAPS}/chr${CHR}.cf3.1_map.txt -B ${GWAS_PLINK} -O ${GWAS_PLINK}.phased -T 8 --window 2 --effective-size 200 --force
 shapeit -convert --input-haps ${GWAS_PLINK}.phased --output-ref ${GWAS_PLINK}.phased.impute
