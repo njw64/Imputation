@@ -3,8 +3,6 @@
 #! RUN : sbatch vcfQC.sh <TAG> <CHR>
 
 #! sbatch directives begin here ###############################
-#! Which project should be charged:
-#SBATCH -A GODOGS-SL2-CPU
 #! How many whole nodes should be allocated?
 #SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total? (<= nodes*32)

@@ -30,4 +30,4 @@ then
 fi
 
 # Files exist so we are ready to impute!
-sbatch -J ${GWAS_PLINK}.impute ${SCRIPTS}/slurm/runImpute.sh ${PROJECT} ${CHR}
+sbatch -A ${ACCOUNT} -J ${GWAS_PLINK}.impute ${SCRIPTS}/slurm/runImpute.sh ${PROJECT} ${CHR}

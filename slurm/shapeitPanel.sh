@@ -3,13 +3,11 @@
 #! RUN : sbatch shapeitPanel.sh 
 
 #! sbatch directives begin here ###############################
-#! Which project should be charged:
-#SBATCH -A GODOGS-SL2-CPU
 #! How many whole nodes should be allocated?
 #SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total? (<= nodes*32)
 #! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
-#SBATCH --ntasks=16
+#SBATCH --ntasks=20
 #! How much wallclock time will be required?
 #SBATCH --time 12:00:00
 #! What types of email messages do you wish to receive?
@@ -35,5 +33,5 @@ cd ${PROJECT}/shapeit
 
 PATH=$PATH:/rfs/project/rfs-x31eBTdMHgM/Software/local/bin/
 
-shapeit -M ${MAPS}/chr${CHR}.cf3.1_map.txt -B ${PROJECT}.ref-panel -O ${PROJECT}.phased -T 16 --window 2 --effective-size 200 --force
+shapeit -M ${MAPS}/chr${CHR}.cf3.1_map.txt -B ${PROJECT}.ref-panel -O ${PROJECT}.phased -T 20 --window 2 --effective-size 200 --force
 shapeit -convert --input-haps ${PROJECT}.phased --output-ref ${PROJECT}.phased.impute

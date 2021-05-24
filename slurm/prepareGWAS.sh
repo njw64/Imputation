@@ -3,8 +3,6 @@
 #! RUN : sbatch prepareGWAS.sh <TAG> <CHR>
 
 #! sbatch directives begin here ###############################
-#! Which project should be charged:
-#SBATCH -A GODOGS-SL2-CPU
 #! How many whole nodes should be allocated?
 #SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total? (<= nodes*32)
@@ -51,4 +49,5 @@ fi
 eval $CMD
 
 perl -lane 'if(($F[4] eq "A" && $F[5] eq "T") || ($F[4] eq "T" && $F[5] eq "A") || ($F[4] eq "C" && $F[5] eq "G") || ($F[4] eq "G" && $F[5] eq "C")){ print $F[1] }' plink.bim > ambiguous.snps
-eval "$PLINK --bfile plink --geno 0.03 --mind 0.05 --maf 0.01 --hwe 0.00005 --freq --missing --make-bed --out ${GWAS_PLINK}"
+eval "$PLINK --bfile plink --exclude ambiguous.snps --make-bed --out plink.2"
+eval "$PLINK --bfile plink.2 --geno 0.03 --mind 0.1 --maf 0.01 --hwe 0.00005 --freq --missing --make-bed --out ${GWAS_PLINK}"

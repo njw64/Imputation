@@ -3,8 +3,6 @@
 #! RUN : sbatch preparePanel.sh 
 
 #! sbatch directives begin here ###############################
-#! Which project should be charged:
-#SBATCH -A GODOGS-SL2-CPU
 #! How many whole nodes should be allocated?
 #SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total? (<= nodes*32)
@@ -48,7 +46,7 @@ rm -rf merged.vcf samples.dups
 eval "$PLINK --const-fid 0 --vcf ${PROJECT}.panel.vcf.gz --make-bed"
 perl -lane 'if(($F[4] eq "A" && $F[5] eq "T") || ($F[4] eq "T" && $F[5] eq "A") || ($F[4] eq "C" && $F[5] eq "G") || ($F[4] eq "G" && $F[5] eq "C")){ print $F[1] }' plink.bim > ambiguous.snps
 eval "$PLINK --const-fid 0 --vcf ${PROJECT}.panel.vcf.gz --exclude ambiguous.snps --freq --missing --make-bed"
-eval "$PLINK --bfile plink --maf 0.01 --mind 0.1 --geno 0.3 --make-bed --out ${PROJECT}.ref-panel"
+eval "$PLINK --bfile plink --maf 0.01 --mind 0.1 --geno 0.03 --make-bed --out ${PROJECT}.ref-panel"
 
 
 
