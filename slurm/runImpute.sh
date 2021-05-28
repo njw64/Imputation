@@ -29,6 +29,8 @@ PROJECT=$1
 CHR=$2
 source setup.config
 
+PATH=$PATH:/rfs/project/rfs-x31eBTdMHgM/Software/local/bin/
+
 LEN=`perl -lane 'if($F[1] eq "SN:'${CHR}'"){ $F[2] =~ s/LN://; print $F[2]; }' ${GENOME}.dict`
 HAPS_FILE="${PROJECT}/shapeit/${PROJECT}.phased.impute.haplotypes"
 LEGEND_FILE="${PROJECT}/shapeit/${PROJECT}.phased.impute.legend"
