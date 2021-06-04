@@ -50,13 +50,19 @@ for TAG in `echo $REF_PANELS:$PROJECT | tr ':' "\n"`; do
 
 done
 
-# prepare BAM files...
-if [ ! -e $BAM_FILES/chr${CHR} ]
+# prepare chromosome-specific BAM files...
+count=`ls ${BAM_FILES}/*.bam | wc -l`               # total number of BAM files available
+count2=`ls ${BAM_FILES}/chr${CHR}/*.bam | wc -l`    # number of chr-specific BAM files available
+
+# check to see if number chr-specific bam files is same as total number available...
+# if not, then create them
+if [ $count != $count2 ]
 then
   echo "Need to create chromosome speciic BAM files - $BAM_FILES";
-  mkdir "${BAM_FILES}/chr${CHR}"
+  if [ ! -e $BAM_FILES/chr${CHR} ]; then
+    mkdir "${BAM_FILES}/chr${CHR}"
+  fi
   # SUBMIT JOB ARRAY!
-  count=`ls ${BAM_FILES}/*.bam | wc -l`
   jid3=$(sbatch -A ${ACCOUNT} -J ${PROJECT}.bams --array=1-${count} ${SCRIPTS}/slurm/prepareBamFiles.sh ${PROJECT} ${CHR})
   JOBS+="${jid3##* }:"
 fi
