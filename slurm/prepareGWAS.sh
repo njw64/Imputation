@@ -50,4 +50,15 @@ eval $CMD
 
 perl -lane 'if(($F[4] eq "A" && $F[5] eq "T") || ($F[4] eq "T" && $F[5] eq "A") || ($F[4] eq "C" && $F[5] eq "G") || ($F[4] eq "G" && $F[5] eq "C")){ print $F[1] }' plink.bim > ambiguous.snps
 eval "$PLINK --bfile plink --exclude ambiguous.snps --make-bed --out plink.2"
-eval "$PLINK --bfile plink.2 --geno 0.03 --mind 0.1 --maf 0.01 --hwe 0.00005 --freq --missing --make-bed --out ${GWAS_PLINK}"
+
+# ideal plink QC is done in 4 distinct/separate steps in order of: --geno, --mind, --maf, --hwe.
+# geno 0.03
+eval "$PLINK --bfile plink.2 --geno 0.03 --make-bed --out plink.geno"
+# mind 0.1
+eval "$PLINK --bfile plink.geno --mind 0.1 --make-bed --out plink.mind"
+# maf 0.01
+eval "$PLINK --bfile plink.mind --maf 0.01 --make-bed --out plink.maf"
+# hwe 0.00005
+eval "$PLINK --bfile plink.maf --hwe 0.00005 --make-bed --out ${GWAS_PLINK}"
+
+# eval "$PLINK --bfile plink.2 --geno 0.03 --mind 0.1 --maf 0.01 --hwe 0.00005 --freq --missing --make-bed --out ${GWAS_PLINK}"
