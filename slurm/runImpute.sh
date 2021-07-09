@@ -36,4 +36,4 @@ HAPS_FILE="${PROJECT}/shapeit/${PROJECT}.phased.impute.haplotypes"
 LEGEND_FILE="${PROJECT}/shapeit/${PROJECT}.phased.impute.legend"
 GWAS_HAPS_FILE="${GWAS_PLINK}/${GWAS_PLINK}.phased.haps"
 
-impute2 -use_prephased_g -m ${MAPS}/chr${CHR}.cf3.1_map.txt -h ${HAPS_FILE} -l ${LEGEND_FILE} -known_haps_g ${GWAS_HAPS_FILE} -int 1 ${LEN} -allow_large_regions -Ne 200 -o ${PROJECT}.impute2 -phase
+impute2 -use_prephased_g -m ${MAPS}/chr${CHR}.cf3.1_map.txt -h ${HAPS_FILE} -l ${LEGEND_FILE} -known_haps_g ${GWAS_HAPS_FILE} -int 1 ${LEN} -allow_large_regions -Ne 200 -o ${GWAS_PLINK}.impute2 -phase
