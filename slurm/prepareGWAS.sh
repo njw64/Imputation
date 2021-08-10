@@ -48,8 +48,12 @@ fi
 
 eval $CMD
 
+# Update names for be CHR:POS to match the reference panel nomenclature
+perl -lane 'next if($F[0] eq "0"); print $F[1]."\t".$F[0].":".$F[3];' plink.bim > snp.names
+eval "$PLINK --update-name snp.names --make-bed --bfile plink --out plink.1"
+
 perl -lane 'if(($F[4] eq "A" && $F[5] eq "T") || ($F[4] eq "T" && $F[5] eq "A") || ($F[4] eq "C" && $F[5] eq "G") || ($F[4] eq "G" && $F[5] eq "C")){ print $F[1] }' plink.bim > ambiguous.snps
-eval "$PLINK --bfile plink --exclude ambiguous.snps --make-bed --out plink.2"
+eval "$PLINK --bfile plink.1 --exclude ambiguous.snps --make-bed --out plink.2"
 
 # ideal plink QC is done in 4 distinct/separate steps in order of: --geno, --mind, --maf, --hwe.
 # geno 0.03
